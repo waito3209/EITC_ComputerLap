@@ -1,5 +1,5 @@
 from support import *
-
+length=300
 cam = cv2.VideoCapture(0)  # 創建一個實例, 引用 opencv, 連接 usb webcam
 
 if not cam.isOpened():  # webcam 連接# 功?
@@ -13,6 +13,9 @@ theFaceThreshold = 20  # minimum pixels to be a face
 # parameter for drawing on the image
 detector = cv2.dnn.readNetFromCaffe(theDetectorProto, theDetectorModel)
 data=None
+
+
+
 while input('takephoto')=='o':  # 重複做以下的程式碼
 
     hasFrame, frame = cam.read()  # get raw image
@@ -37,7 +40,7 @@ while input('takephoto')=='o':  # 重複做以下的程式碼
             (startX, startY, endX, endY) = box.astype("int")
             # extract the face ROI
             face = frame[startY:endY, startX:endX]
-            data=frame[startY:endY, startX:endX].copy()
+            data=standardphoto(length,frame[startY:endY, startX:endX].copy())
             np.save('facedata/'+input('filename'),arr=BGR_RGB(data))
             (fH, fW) = face.shape[:2]
 

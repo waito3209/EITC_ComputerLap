@@ -1,5 +1,5 @@
 from support import *
-
+length=300
 cam = cv2.VideoCapture(0)  # 創建一個實例, 引用 opencv, 連接 usb webcam
 
 if not cam.isOpened():  # webcam 連接# 功?
@@ -14,22 +14,22 @@ theFaceThreshold = 20  # minimum pixels to be a face
 detector = cv2.dnn.readNetFromCaffe(theDetectorProto, theDetectorModel)
 data=None
 
-from skimage import data, img_as_float
-from skimage.metrics import structural_similarity as ssim
-from os import listdir
-from os.path import isfile, isdir, join
+
 def compare(enterdata,facedata):
     enterdatadata = np.load('enterdata/' + enterdata+ '.npy' )
     facedatadata = np.load('facedata/' + facedata)
-    print(enterdatadata.shape)
-    print(facedatadata.shape)
-    print(ssim(enterdatadata, facedatadata,multichannel=True))
+    # print(enterdatadata.shape)
+    # print(facedatadata.shape)
+    out=ssim(enterdatadata, facedatadata,multichannel=True)
+    print('facedata/' + facedata+'----',end='')
+    print(out)
+    return out
 
 
 while True:  # 重複做以下的程式碼
     filename=time.strftime("%Y%m%d-%H%M%S")
     hasFrame, frame = cam.read()  # get raw image
-    cv2.imshow('image', frame)  # livestream
+    #cv2.imshow('image', frame)  # livestream
 
     # frame_RGB=BGR_RGB(frame)# 讀入一幀圖片
     # render(frame_RGB)# plt
@@ -50,7 +50,7 @@ while True:  # 重複做以下的程式碼
             (startX, startY, endX, endY) = box.astype("int")
             # extract the face ROI
             face = frame[startY:endY, startX:endX]
-            data=frame[startY:endY, startX:endX].copy()
+            data=standardphoto(length,frame[startY:endY, startX:endX].copy())
             np.save('enterdata/'+filename,arr=BGR_RGB(data))
             (fH, fW) = face.shape[:2]
 
@@ -60,9 +60,13 @@ while True:  # 重複做以下的程式碼
 
             y = startY - 10 if startY - 10 > 10 else startY + 10
             cv2.rectangle(frame, (startX, startY), (endX, endY), (0, 0, 255), 2)
+    #Max=[0,'']
     for i in listdir('facedata'):
         compare(filename,i)
-    os.remove('enterdata/'+filename+'.npy')
-    render(BGR_RGB(frame))  # convert BGR to RGB
+    #    if (>Max[0]):
+    #        Max[1]=i
+    # print(Max)
+    #os.remove('enterdata/'+filename+'.npy')
+    #render(BGR_RGB(frame))  # convert BGR to RGB
 cam.release()  # 釋放之前創建的實例
 cv2.destroyAllWindows()  # 關閉所有創建的視窗

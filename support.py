@@ -17,8 +17,13 @@ import matplotlib.pyplot as plt
 
 print('import matplotlib.pyplot as plt')
 import os
+print('import os')
 from skimage import data, img_as_float
 from skimage.metrics import structural_similarity as ssim
+
+from os import listdir
+from os.path import isfile, isdir, join
+import math
 def BGR_RGB(img):
     for i in img:
         for y in i:
@@ -30,3 +35,6 @@ def BGR_RGB(img):
 def render(img):
     plt.imshow(img, interpolation='nearest')
     plt.show()
+def standardphoto(length,data):
+
+    return cv2.resize(data, (length,length), interpolation = cv2.INTER_AREA)
