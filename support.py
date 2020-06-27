@@ -13,8 +13,8 @@ print('import time')
 import datetime
 print('import datetime')
 
-import win32com.client  # 導入程式庫
-print('win32com.client')
+# import win32com.client  # 導入程式庫
+# print('win32com.client')
 
 import matplotlib.pyplot as plt
 print('import matplotlib.pyplot as plt')
@@ -38,7 +38,8 @@ print('from os.path import isfile, isdir, join')
 import math
 print('import math')
 
-
+from itertools import permutations ,combinations
+print('from itertools import permutations,combinations ')
 
 def BGR_RGB(img):
     for i in img:
@@ -61,7 +62,7 @@ def standardphoto(length,data):
 print('def standardphoto(length,data):')
 
 def detail(something):
-
+    print("---------------")
     print(type(something))
     try:
         print(something[0])
