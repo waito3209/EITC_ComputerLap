@@ -11,4 +11,5 @@ while True:
         print(data.shape)
     for i in listdir(path):
         data = np.load(path + '/'+i )
+        print(str(i))
         render(data)
