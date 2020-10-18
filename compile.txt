@@ -1,0 +1,1 @@
+pyinstaller  --onefile try.py  -p D:\eit226\EITC_git\EITC_ComputerLap\venv2\Lib\site-packages --hidden-import numpy --hidden-import PySimpleGUI --hidden-import cv2 --hidden-import support --hidden-import tensorflow --hidden-import copy --hidden-import threading --hidden-import datetime

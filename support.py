@@ -58,7 +58,9 @@ print('def render(img):')
 
 def standardphoto(length,data):
 
-    return cv2.resize(data, (length,length), interpolation = cv2.INTER_AREA)
+    return cv2.resize(data, (length,length)
+                      #, interpolation = cv2.INTER_AREA
+    )
 print('def standardphoto(length,data):')
 
 def detail(something):

@@ -1,0 +1,153 @@
+        function score(c:gamestatearray;d:integer):integer;
+        begin
+        if c[3] then
+           score:=1
+        else
+            begin
+            score:=d;
+            if c[5] then score:=20;
+            if c[6] then score:=40;
+            if c[4] then
+               score*=2
+            else
+                score*=-2;
+            end;
+        end;
+
+        function AIinput
+        ( a:boardarraytype; b:boardlevel; c:gamestatearray;death:integer):AIscore;
+        var
+        ALLBoard:boardarraytype;
+        ALLboardlevel,order:boardlevel;  //USE order of a random order to calcuate best input
+        ALLgamestate:gamestatearray;
+        ALLscore:Aiscore;
+        i,j:integer;
+         begin
+        //write('.');
+        if  death=0 then
+              begin
+                   //writeln('kill');
+                   randomarray(order);
+                   i:=1;
+                   while(inrange(order[i],1,7)) do
+                      begin
+                           if validatemove(b,order[i]) then
+                              break;
+                           i+=1;
+                      end;
+                   AIinput[1]:=order[i];//write(AIinput[1]);
+                   AIinput[2]:=0 ;
+              end
+        else
+            if c[1] then
+               begin
+                    //calcuate default value(valdiated)
+                    randomarray(order);
+                    i:=1;
+                    //writeln(order[1]);
+                    while(inrange(i,1,7)) do
+                        begin
+                             if validatemove(b,order[i])then
+                                break;
+                             i+=1;
+                        end;
+                    ALlscore[1]:=order[i];if c[1] then ALlscore[2]:=0 else ALlscore[2]:=0;
+                    //write(AIinput[1]);
+                    i:=1;// ALlscore[1]:=1;ALlscore[2]:=-2;
+                    while inrange(i,1,7) and (ALlscore[2]<>80) do
+                      begin
+
+                          if not(validatemove(b,order[i])) then
+                          begin
+                               i+=1;
+                               continue;
+                          end;
+                          // write( order[i]);
+                          //similate move
+                          copyboardarraytype(ALLBoard,a);
+                          copygamestatearray(ALLgamestate,c);
+                          copyboardlevel(ALLboardlevel,b);
+                          //writeln('1');
+                          move(ALLBoard,ALLboardlevel,ALLgamestate,order[i]);
+                          //writeln(order[i]) ;
+                          if(ALLgamestate[2]) then
+                               begin
+                                    j:=score(ALLgamestate,death);
+                                    //calcuate score
+                               end
+                         else
+                             begin
+                             // write(2);
+                                 j:=AIinput(ALLBoard,ALLboardlevel,ALLgamestate,death-1)[2];
+                             end;
+                         if ALLscore[2]<=j then
+                            begin
+                                 ALLscore[1]:=order[i];
+                                 ALLscore[2]:=j;
+                            end;
+                         i+=1;
+                     end;
+                     AIinput:= ALLscore;
+
+               end
+           else
+               begin
+                    i:=1;
+                    randomarray(order);
+                    while(inrange(i,1,7)) do
+                      begin
+                           if validatemove(b,order[i])then
+                              break;
+                           i+=1;
+                      end;
+                    ALlscore[1]:=order[i];
+                    ALlscore[2]:=0;
+
+                    i:=1;randomarray(order);
+                    //  writeln(order[1]);writeln(order[2]);
+                    // ALlscore[1]:=1;ALlscore[2]:=2;
+                    while inrange(i,1,7) and (ALlscore[2]<>-80) do
+                          begin
+                               if not(validatemove(b,order[i])) then
+                               begin
+                                    i+=1;
+                                    continue;
+                               end;
+                               copyboardarraytype(ALLBoard,a);
+                               copygamestatearray(ALLgamestate,c);
+                               copyboardlevel(ALLboardlevel,b);//writeln('-1');
+                               move(ALLBoard,ALLboardlevel,ALLgamestate,order[i]);
+                               if(ALLgamestate[2]) then
+                                     begin
+                                       j:=score(ALLgamestate,death);
+                                     end
+                               else
+                                   begin  //write(1);
+                                          j:=AIinput(ALLBoard,ALLboardlevel,ALLgamestate,death-1)[2];
+                                   end;
+                               if ALLscore[2]>=j then
+                               begin
+                                    ALLscore[1]:=order[i];
+                                    ALLscore[2]:=j;
+                               end;
+                               i+=1;
+                          end;
+                    AIinput:= ALLscore;
+               end;
+        //writeln();write(AIinput[1]);write('||');writeln(AIinput[2]);
+        end;
+
+        function AIinputtoplevel
+        ( a:boardarraytype; b:boardlevel;c:gamestatearray;step:integer):AIscore;
+        begin
+        if step<7 then
+           AIinputtoplevel:=AIinput(a,b,c,6)
+        else
+            if step<25 then
+               AIinputtoplevel:=AIinput(a,b,c,9)
+            else
+                AIinputtoplevel:=AIinput(a,b,c,deap);
+        if a[6,5]=emptyunit then AIinputtoplevel[1]:=5;
+        if a[6,4]=emptyunit then AIinputtoplevel[1]:=4;
+        write('AI01 alpha-beta play in :');
+        writeln(AIinputtoplevel[1]);
